@@ -1,0 +1,21 @@
+spring:
+  jpa:
+    hibernate:
+      # Creates missing tables on first start; set JPA_DDL_AUTO=validate once the schema is established.
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    show-sql: false
+
+cinecircle:
+  jwt:
+    # No fallback in production: startup fails unless JWT_SECRET is provided.
+    secret: ${JWT_SECRET}
+
+server:
+  error:
+    include-message: never
+    include-stacktrace: never
+
+logging:
+  level:
+    root: WARN
+    com.cinecircle: INFO
