@@ -18,7 +18,15 @@ import type {
   WatchlistItem,
 } from './types'
 
-const API_BASE = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') ?? ''
+function resolveApiBase(): string {
+  const fromEnv = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '')
+  if (typeof window !== 'undefined' && window.location.hostname.endsWith('.vercel.app')) {
+    return ''
+  }
+  return fromEnv ?? ''
+}
+
+const API_BASE = resolveApiBase()
 const TOKEN_KEY = 'cinecircle.token'
 
 export const UNAUTHORIZED_EVENT = 'cinecircle:unauthorized'
