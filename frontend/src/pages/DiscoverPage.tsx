@@ -12,16 +12,18 @@ import { useAsync } from '../lib/useAsync'
 const CATEGORIES: { id: BrowseCategory; label: string }[] = [
   { id: 'popular', label: 'Popular' },
   { id: 'top_rated', label: 'Top rated' },
-  { id: 'now_playing', label: 'Now playing' },
-  { id: 'upcoming', label: 'Upcoming' },
 ]
+
+function parseCategory(value: string | null): BrowseCategory {
+  return CATEGORIES.some((c) => c.id === value) ? (value as BrowseCategory) : 'popular'
+}
 
 const TMDB_MAX_PAGE = 500
 
 export default function DiscoverPage() {
   const [params, setParams] = useSearchParams()
   const query = params.get('q')?.trim() ?? ''
-  const category = (params.get('category') as BrowseCategory | null) ?? 'popular'
+  const category = parseCategory(params.get('category'))
   const page = Math.max(1, Number(params.get('page')) || 1)
   const yearParam = params.get('year')
   const year = yearParam ? Number(yearParam) : undefined

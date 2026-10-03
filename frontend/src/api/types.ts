@@ -156,4 +156,4 @@ export interface Notification {
   createdAt: string
 }
 
-export type BrowseCategory = 'popular' | 'top_rated' | 'now_playing' | 'upcoming'
+export type BrowseCategory = 'popular' | 'top_rated'
