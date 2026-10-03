@@ -1,5 +1,7 @@
 package com.cinecircle.movie;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cinecircle.common.ApiException;
 import com.cinecircle.movie.MovieDtos.MovieDetails;
 import com.cinecircle.movie.MovieDtos.MoviePage;
+import com.cinecircle.movie.MovieDtos.MovieSummary;
 import com.cinecircle.review.ReviewRepository;
 
 @Service
@@ -45,7 +48,19 @@ public class MovieService {
         if (page < 1 || page > 500) {
             throw ApiException.badRequest("Page must be between 1 and 500");
         }
-        return tmdbClient.browse(category, page);
+        MoviePage result = tmdbClient.browse(category, page);
+        if ("upcoming".equals(category)) {
+            return filterUpcoming(result);
+        }
+        return result;
+    }
+
+    private static MoviePage filterUpcoming(MoviePage page) {
+        LocalDate today = LocalDate.now();
+        List<MovieSummary> upcoming = page.results().stream()
+                .filter(movie -> movie.releaseDate() != null && movie.releaseDate().isAfter(today))
+                .toList();
+        return new MoviePage(page.page(), page.totalPages(), page.totalResults(), upcoming);
     }
 
     @Transactional(readOnly = true)
